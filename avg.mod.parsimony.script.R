@@ -199,27 +199,40 @@ for(sample.size in sample.size.vec){ # sample.size <- 50
 
 plot(NULL, xlim = c(1, length(sample.size.vec)), ylim = c(0.6, max(c(mse.first.sample.size, mse.full.sample.size, mse.nat.sample.size, mse.tot.sample.size))),
 	xlab = "sample size", ylab = "mse", pch = 19, xaxt = "n", las = 1, cex.lab = 1.5, cex.axis = 1.3)
+axis(side = 1, at = c(1:8), labels = levels(as.factor(sample.size.vec/2)))
+
 points(mse.first.sample.size ~ as.factor(sample.size.vec), pch = 19)
+text(6, 1.25, "first ranked model")
+points(4.2, 1.25, pch = 19)
+
 points(mse.tot.sample.size ~ as.factor(sample.size.vec), pch = 17)
+text(6, 1.2, "full model")
+points(4.2, 1.2, pch = 17)
+
 points(mse.full.sample.size ~ as.factor(sample.size.vec), pch = 15, col = "red")
+text(6, 1.15, "full averaging")
+points(4.2, 1.15, pch = 15, col = "red")
+
 points(mse.nat.sample.size ~ as.factor(sample.size.vec), col = "red")
+text(6, 1.1, "natural averaging")
+points(4.2, 1.1, pch = 1, col = "red")
+
 points(mse.reduced.full.sample.size ~ as.factor(sample.size.vec), pch = 15, col = "blue")
 points(mse.reduced.nat.sample.size ~ as.factor(sample.size.vec), col = "blue")
 points(mse.reduced.SW.full.sample.size ~ as.factor(sample.size.vec), pch = 15, col = "green")
 points(mse.reduced.SW.nat.sample.size ~ as.factor(sample.size.vec), col = "green")
-axis(side = 1, at = c(1:8), labels = levels(as.factor(sample.size.vec/2)))
-text(6, 1.25, "first ranked model")
-text(6, 1.2, "full model")
-text(6, 1.15, "full averaging")
-text(6, 1.1, "natural averaging")
+
+
+
+
 text(6, 1.05, "reduced full averaging P value")
 text(6, 1, "reduced natural averaging P value")
 text(6, 0.95, "reduced full averaging SW")
 text(6, 0.9, "reduced natural averaging SW")
-points(4.2, 1.25, pch = 19)
-points(4.2, 1.2, pch = 17)
-points(4.2, 1.15, pch = 15, col = "red")
-points(4.2, 1.1, pch = 1, col = "red")
+
+
+
+
 points(4.2, 1.05, pch = 15, col = "blue")
 points(4.2, 1, pch = 1, col = "blue")
 points(4.2, 0.95, pch = 15, col = "green")
@@ -228,44 +241,6 @@ points(4.2, 0.9, pch = 1, col = "green")
 
 
 
-
-
-
-
-
-
-full <- summary(mod.avg)$coefmat.full
-nat <- summary(mod.avg)$coefmat.subset 
-iteration <- 1
-AICfull <- numeric(length(iteration))
-AICnat <- numeric(length(iteration))
-for(i in 1:iteration){
-	r.1.full <- rnorm(1, full["x1", "Estimate"], full["x1", "Std. Error"])
-	r.2.full <- rnorm(1, full["x2", "Estimate"], full["x2", "Std. Error"])
-	r.3.full <- rnorm(1, full["x3", "Estimate"], full["x3", "Std. Error"])
-	r.5.full <- rnorm(1, full["x4", "Estimate"], full["x4", "Std. Error"])
-	r.6 <- 0.05
-	r1.2 <- 0
-
-	dfull <- dat.sim.5var(sample.size, r.1.full, r.2.full, r.3.full, r.6, r.5.full, r1.2)
-	options(na.action = "na.fail") 
-	m.full <- lm(Y ~ x1 + x2 + x3 + x5, data = dfull)
-	AICfull[i] <- AIC(m.full)
-
-	r.1.nat <- rnorm(1, nat["x1", "Estimate"], nat["x1", "Std. Error"])
-	r.2.nat <- rnorm(1, nat["x2", "Estimate"], nat["x2", "Std. Error"])
-	r.3.nat <- rnorm(1, nat["x3", "Estimate"], nat["x3", "Std. Error"])
-	r.5.nat <- rnorm(1, nat["x4", "Estimate"], nat["x4", "Std. Error"])
-	r.6 <- 0.05
-	r1.2 <- 0
-	dnat <- dat.sim.5var(sample.size, r.1.nat, r.2.nat, r.3.nat, r.6, r.5.nat, r1.2)
-	options(na.action = "na.fail") 
-	m.nat <- lm(Y ~ x1 + x2 + x3 + x5, data = dnat)
-	AICnat[i] <- AIC(m.nat)
-}
-ms1$AIC[1]
-mean(AICfull) - ms1$AIC[1]
-mean(AICnat) - ms1$AIC[1]
  
 
 
